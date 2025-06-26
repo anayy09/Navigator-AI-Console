@@ -1,36 +1,174 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Navigator AI Console
 
-## Getting Started
+A web console for accessing multiple AI models through the Navigator AI Gateway.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- 🤖 **Multi-Model Chat**: Access various LLMs including Llama, Mixtral, Mistral, and more
+- 🔢 **Text Embeddings**: Generate high-quality embeddings for semantic search
+- 🎤 **Speech-to-Text**: Convert audio files to text using Whisper models
+- 🚀 **Streaming Responses**: Real-time token-by-token streaming
+- 📊 **Usage Tracking**: Built-in rate limiting and budget management
+- 🔐 **Authentication**: Secure user accounts with session management
+- 🎨 **Modern UI**: Dark-mode first design with Chakra UI
+- 📱 **Responsive**: Works on desktop and mobile devices
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Frontend**: Next.js 14, React, TypeScript, Chakra UI
+- **Backend**: Next.js API Routes, NextAuth.js
+- **Database**: PostgreSQL with Prisma ORM
+- **Cache**: Redis for anonymous user tracking
+- **AI Gateway**: LiteLLM proxy for model access
+- **Deployment**: Docker, Docker Compose
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Quick Start
 
-## Learn More
+### Prerequisites
 
-To learn more about Next.js, take a look at the following resources:
+- Node.js 18+ 
+- Docker and Docker Compose
+- PostgreSQL (or use Docker)
+- Redis (or use Docker)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Development Setup
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd navigator-console
+   ```
 
-## Deploy on Vercel
+2. **Set up environment variables**
+   ```bash
+   cp .env.example .env.local
+   # Edit .env.local with your configuration
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. **Start services and setup database**
+   ```bash
+   # Start PostgreSQL and Redis
+   docker-compose up -d
+   
+   # Install dependencies
+   npm install
+   
+   # Setup database
+   npx prisma migrate dev
+   npx prisma generate
+   
+   # Optional: Seed database
+   npm run db:seed
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. **Start development server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open your browser**
+   ```
+   http://localhost:3000
+   ```
+
+## Environment Variables
+
+See `.env.example` for all required environment variables.
+
+Key variables:
+- `DATABASE_URL`: PostgreSQL connection string
+- `REDIS_URL`: Redis connection string  
+- `LLM_BASE_URL`: Your LiteLLM gateway URL
+- `LLM_API_KEY`: Your LiteLLM master key
+- `NEXTAUTH_SECRET`: Secret key for NextAuth
+- `ANON_TOKEN_SECRET`: Secret for anonymous user tokens
+
+## Usage Limits
+
+- **Anonymous users**: 2 requests per 24 hours
+- **Registered users**: 10 requests per 24 hours
+- **LiteLLM budget**: $0.25 per user per day (configurable)
+
+## API Endpoints
+
+- `POST /api/chat` - Chat completions with streaming
+- `POST /api/embeddings` - Generate text embeddings
+- `POST /api/whisper` - Speech-to-text transcription
+- `GET /api/usage` - Get current usage stats
+- `GET /api/status` - System health check
+
+## Available Models
+
+### Chat/Code Models
+- Llama 3.1 70B Instruct
+- Llama 3.3 70B Instruct  
+- Mixtral 8x7B Instruct
+- Mistral 7B Instruct
+- Codestral 22B
+- And more...
+
+### Embedding Models
+- Nomic Embed Text v1.5
+- SFR Embedding Mistral
+- GTE Large EN v1.5
+
+### Speech Models
+- Whisper Large v3
+
+## Deployment
+
+### Docker Deployment
+
+1. **Build the image**
+   ```bash
+   docker build -t navigator-console .
+   ```
+
+2. **Run with Docker Compose**
+   ```bash
+   docker-compose up -d
+   ```
+
+### Manual Deployment
+
+1. **Install dependencies**
+   ```bash
+   npm ci
+   ```
+
+2. **Build the application**
+   ```bash
+   npm run build
+   ```
+
+3. **Run database migrations**
+   ```bash
+   npx prisma migrate deploy
+   ```
+
+4. **Start the server**
+   ```bash
+   npm start
+   ```
+
+## Monitoring
+
+- Health check endpoint: `GET /api/status`
+- Database monitoring via Prisma Studio: `npm run db:studio`
+- Redis monitoring via Docker logs: `docker-compose logs redis`
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## License
+
+MIT License - see LICENSE file for details.
+
+## Support
+
+For issues and questions, please open a GitHub issue or contact the development team.
