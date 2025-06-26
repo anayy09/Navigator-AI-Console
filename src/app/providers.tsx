@@ -1,28 +1,41 @@
 'use client'
 
-import { ChakraProvider, createSystem, defaultConfig } from '@chakra-ui/react'
+import { ChakraProvider, extendTheme } from '@chakra-ui/react'
+import { SessionProvider } from 'next-auth/react'
 
-const system = createSystem(defaultConfig, {
-  theme: {
-    tokens: {
-      colors: {
-        brand: {
-          50: { value: '#E6F3FF' },
-          100: { value: '#B3D9FF' },
-          200: { value: '#80BFFF' },
-          300: { value: '#4DA6FF' },
-          400: { value: '#1A8CFF' },
-          500: { value: '#1E90FF' },
-          600: { value: '#0066CC' },
-          700: { value: '#004C99' },
-          800: { value: '#003366' },
-          900: { value: '#001933' },
-        },
+const theme = extendTheme({
+  config: {
+    initialColorMode: 'dark',
+    useSystemColorMode: false,
+  },
+  colors: {
+    brand: {
+      50: '#E6F3FF',
+      100: '#B3D9FF',
+      200: '#80BFFF',
+      300: '#4DA6FF',
+      400: '#1A8CFF',
+      500: '#1E90FF', // Main blue accent
+      600: '#0066CC',
+      700: '#004C99',
+      800: '#003366',
+      900: '#001933',
+    },
+  },
+  styles: {
+    global: {
+      body: {
+        bg: 'gray.900',
+        color: 'white',
       },
     },
   },
 })
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  return <ChakraProvider value={system}>{children}</ChakraProvider>
+  return (
+    <SessionProvider>
+      <ChakraProvider theme={theme}>{children}</ChakraProvider>
+    </SessionProvider>
+  )
 }
