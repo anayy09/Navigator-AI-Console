@@ -24,21 +24,25 @@ export default function HomePage() {
       icon: FiMessageSquare,
       title: 'Chat & Code',
       description: 'Access powerful language models for conversations and code generation',
+      href: '/chat',
     },
     {
       icon: FiDatabase,
       title: 'Embeddings',
       description: 'Generate high-quality text embeddings for semantic search',
+      href: '/embed',
     },
     {
       icon: FiMic,
       title: 'Speech',
       description: 'Convert speech to text with state-of-the-art models',
+      href: '/whisper',
     },
     {
       icon: FiZap,
       title: 'Experiments',
       description: 'Try cutting-edge experimental models and features',
+      href: '/chat',
     },
   ]
 
@@ -91,6 +95,8 @@ export default function HomePage() {
                 borderColor="gray.700"
                 _hover={{ borderColor: "brand.500", transform: "translateY(-2px)" }}
                 transition="all 0.2s"
+                cursor="pointer"
+                onClick={() => router.push(feature.href)}
               >
                 <CardBody textAlign="center" p={6}>
                   <VStack spacing={4}>

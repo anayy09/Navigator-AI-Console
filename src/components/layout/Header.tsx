@@ -15,10 +15,12 @@ import {
   MenuList,
   MenuItem,
   useToast,
+  Link,
 } from '@chakra-ui/react'
 import { useSession, signOut } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { ChevronDownIcon } from '@chakra-ui/icons'
+import NextLink from 'next/link'
 
 interface HeaderProps {
   selectedModel: string
@@ -54,9 +56,16 @@ const models = {
   ]
 }
 
+const navigationLinks = [
+  { href: '/chat', label: 'Chat' },
+  { href: '/embed', label: 'Embeddings' },
+  { href: '/whisper', label: 'Speech' },
+]
+
 export default function Header({ selectedModel, onModelChange, usage }: HeaderProps) {
   const { data: session } = useSession()
   const router = useRouter()
+  const pathname = usePathname()
   const toast = useToast()
 
   const handleSignOut = async () => {
@@ -102,6 +111,31 @@ export default function Header({ selectedModel, onModelChange, usage }: HeaderPr
             Navigator AI
           </Heading>
 
+          {/* Navigation Links */}
+          <HStack spacing={1}>
+            {navigationLinks.map((link) => (
+              <Link
+                key={link.href}
+                as={NextLink}
+                href={link.href}
+                px={3}
+                py={2}
+                borderRadius="md"
+                color={pathname === link.href ? "brand.400" : "gray.300"}
+                bg={pathname === link.href ? "gray.700" : "transparent"}
+                _hover={{
+                  color: "brand.400",
+                  bg: "gray.700",
+                  textDecoration: "none"
+                }}
+                fontSize="sm"
+                fontWeight="medium"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </HStack>
+
           <Select
             value={selectedModel}
             onChange={(e) => onModelChange(e.target.value)}
@@ -109,6 +143,7 @@ export default function Header({ selectedModel, onModelChange, usage }: HeaderPr
             border="1px"
             borderColor="gray.600"
             w="250px"
+            size="sm"
             _hover={{ borderColor: "brand.500" }}
             _focus={{ borderColor: "brand.500" }}
           >
@@ -136,7 +171,7 @@ export default function Header({ selectedModel, onModelChange, usage }: HeaderPr
 
           {session?.user ? (
             <Menu>
-              <MenuButton as={Button} variant="ghost" p={2}>
+              <MenuButton as={Button} variant="ghost" p={2} size="sm">
                 <HStack>
                   <Avatar 
                     size="sm" 
