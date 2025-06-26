@@ -61,6 +61,6 @@ model UsageLog {
   day    DateTime @default(now())
   user   User?    @relation(fields: [userId], references: [id])
 
-  @@unique([userId, day])
+  @@unique([userId, day], map: "userId_day")
   @@map("usage_logs")
 }
