@@ -37,16 +37,24 @@ export async function checkAndIncrementUsage(userId?: string): Promise<{ allowed
     const key = `anon:${anonToken}`
     
     const current = await redis.get(key)
-    const currentCount = current ? parseInt(current) : 0
+    const currentCount = current ? parseInt(current as string) : 0
     
     if (currentCount >= 2) {
       return { allowed: false, remaining: 0 }
     }
 
-    await redis.multi()
-      .incr(key)
-      .expire(key, 24 * 60 * 60) // 24 hours
-      .exec()
+    // Handle both ioredis and Vercel KV
+    if ('multi' in redis) {
+      // ioredis
+      await redis.multi()
+        .incr(key)
+        .expire(key, 24 * 60 * 60) // 24 hours
+        .exec()
+    } else {
+      // Vercel KV
+      await redis.incr(key)
+      await redis.expire(key, 24 * 60 * 60)
+    }
 
     return { allowed: true, remaining: Math.max(0, 2 - (currentCount + 1)) }
   }
@@ -71,7 +79,7 @@ export async function getUserUsage(userId?: string): Promise<{ used: number; lim
     const anonToken = await getOrCreateAnonToken()
     const key = `anon:${anonToken}`
     const current = await redis.get(key)
-    const used = current ? parseInt(current) : 0
+    const used = current ? parseInt(current as string) : 0
 
     return { used, limit: 2 }
   }

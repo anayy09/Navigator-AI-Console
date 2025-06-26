@@ -35,7 +35,13 @@ export async function GET() {
   // Check Redis
   try {
     const redisStart = Date.now()
-    await redis.ping()
+    // Handle both ioredis and Vercel KV
+    if ('ping' in redis) {
+      await redis.ping()
+    } else {
+      // For Vercel KV, just try a simple operation
+      await redis.get('health-check')
+    }
     status.services.redis = {
       status: 'ok',
       latency: Date.now() - redisStart
