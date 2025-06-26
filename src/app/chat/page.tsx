@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react'
 import { useState, useEffect, useRef } from 'react'
 import { useSession } from 'next-auth/react'
-import { CopyIcon, SendIcon } from '@chakra-ui/icons'
+import { CopyIcon, ArrowForwardIcon } from '@chakra-ui/icons'
 import ReactMarkdown from 'react-markdown'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
@@ -355,7 +355,7 @@ export default function ChatPage() {
                     size="md"
                     px={6}
                     disabled={!input.trim() || usage.used >= usage.limit}
-                    leftIcon={<SendIcon />}
+                    leftIcon={<ArrowForwardIcon />}
                   >
                     Send
                   </Button>
